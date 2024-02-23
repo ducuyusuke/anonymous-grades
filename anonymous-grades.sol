@@ -5,10 +5,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract GradeContract is Ownable {
   using SafeMath for uint256;
 
-  // Important! These "events" are what we are actually adding to the blockchain
+  // Important! These "events" are what we are actually adding to the blockchain;
   event NewStudent(address indexed student, string name);
   event NewGrade(address indexed student, string subject, uint8 grade, uint256 date);
 
+  // Here we are defining what our grade is comprised of: a string, a float, and a datetime;
   struct Grade {
     string subject;
     uint8 grade;
@@ -18,12 +19,13 @@ contract GradeContract is Ownable {
   Grade[] internal grades;
   uint256 public gradeCount;
 
+  // This is a bit more complex: we are creating relationships (think dictionaries) between our objects;
   mapping(uint256 => address) internal gradeIdToStudent;
   mapping(string => address) internal studentNameToAddress;
   mapping(address => string) internal addressToStudentName;
   mapping(address => uint256) internal studentToGradeCount;
 
-
+  // These modifiers are checking for data integrity;
   modifier addressIsStudent(address memory _studentAddress) {
     require(addressToStudentName[_studentAddress] != "", "This address is not a student");
   }
@@ -44,6 +46,7 @@ contract GradeContract is Ownable {
     require(_grade >= 0 && _grade <= 10, "Grade must be between 0 and 10");
   }
 
+  // This is how we create a student;
   function _becomeStudent(
     string memory _name
   ) internal {
@@ -62,6 +65,7 @@ contract GradeContract is Ownable {
     emit NewStudent(msg.sender, _name);
   }
 
+  // And this is how we create a grade, only we (the owner) can do it;
   function _createGrade(
     string memory _subject,
     uint8 memory _grade,
@@ -90,6 +94,7 @@ contract GradeContract is Ownable {
     emit NewGrade(studentAddress, _subject, _grade, _date);
   }
 
+  // This is where we want to focus, as here we are building an array of arrays!
   function _getAllGrades()
     internal
     view
@@ -150,7 +155,7 @@ contract GradeContract is Ownable {
         }
     }
   }
-
+  // This is how a student can access their grades; what is addressIsStudent doing?
   function getStudentGrades()
     external
     view
