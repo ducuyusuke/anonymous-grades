@@ -1,11 +1,11 @@
 pragma solidity >=0.7.0 <0.9.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract GradeContract is Ownable {
   using SafeMath for uint256;
 
+  // Important! These "events" are what we are actually adding to the blockchain
   event NewStudent(address indexed student, string name);
   event NewGrade(address indexed student, string subject, uint8 grade, uint256 date);
 
@@ -85,7 +85,7 @@ contract GradeContract is Ownable {
     gradeCount = gradeCount.add(1);
     studentToGradeCount = studentToGradeCount.add(1);
     uint256 id = grades.length.sub(1);
-    address studentAddress = studentNameToAddress[_studentName]
+    address studentAddress = studentNameToAddress[_studentName];
     gradeIdToStudent[id] = studentAddress;
     emit NewGrade(studentAddress, _subject, _grade, _date);
   }
